@@ -1,3 +1,4 @@
+from os import system
 from time import time
 
 import numpy as np
@@ -17,17 +18,22 @@ import numpy as np
 class Basic:
     @staticmethod
     def register():
-        return [Basic.addition, Basic.subtraction]
+        return [Basic.addition, Basic.subtraction, Basic.multiplication]
 
     @staticmethod
     def addition():
-        a, b = np.random.randint(1, 10, 2)
+        a, b = np.random.randint(-10, 10, 2)
         return "{} + {}".format(a, b), a + b
 
     @staticmethod
     def subtraction():
-        a, b = np.random.randint(1, 10, 2)
+        a, b = np.random.randint(-10, 10, 2)
         return "{} - {}".format(a, b), a - b
+
+    @staticmethod
+    def multiplication():
+        a, b = np.random.randint(-10, 10, 2)
+        return "{} * {}".format(a, b), a * b
 
 
 class Train:
@@ -39,6 +45,7 @@ class Train:
 n = 5
 t = Train(Basic)
 results = np.zeros(n)
+system('clear')
 
 for i in range(n):
     method = np.random.choice(t.methods)
@@ -53,4 +60,7 @@ for i in range(n):
     elapsed = end - start
     results[i] = elapsed
 
-print("\nresults: {}".format(results.round(2)))
+print(
+    "\nmean: {} results: {}".format(
+        results.mean().round(2),
+        results.round(2)))
