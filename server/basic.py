@@ -2,21 +2,24 @@ import numpy as np
 
 
 class Basic:
-    @staticmethod
-    def register():
-        return [Basic.addition, Basic.subtraction, Basic.multiplication]
+    def __init__(self, lower, upper):
+        self.lower = lower
+        self.upper = upper + 1
 
-    @staticmethod
-    def addition():
-        a, b = np.random.randint(-10, 10, 2)
+    def register(self):
+        return [self.addition, self.subtraction, self.multiplication]
+
+    def get_values(self):
+        return np.random.randint(self.lower, self.upper, 2)
+
+    def addition(self):
+        a, b = self.get_values()
         return "{} + {}".format(a, b), a + b
 
-    @staticmethod
-    def subtraction():
-        a, b = np.random.randint(-10, 10, 2)
+    def subtraction(self):
+        a, b = self.get_values()
         return "{} - {}".format(a, b), a - b
 
-    @staticmethod
-    def multiplication():
-        a, b = np.random.randint(-10, 10, 2)
+    def multiplication(self):
+        a, b = self.get_values()
         return "{} * {}".format(a, b), a * b

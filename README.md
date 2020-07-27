@@ -2,6 +2,7 @@
 
 ## todo
 
+- use MathJAX
 - change upper limit 1 to 100
 - change "n"
 - save to sql

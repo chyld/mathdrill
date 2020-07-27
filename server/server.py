@@ -1,17 +1,16 @@
-from fastapi import FastAPI
-# from time import time
 from basic import Basic
+
+from fastapi import FastAPI
+
 import numpy as np
-from train import Train
 
 app = FastAPI()
 
-t = Train(Basic)
 
-
-@app.get("/")
-def home():
-    method = np.random.choice(t.methods)
+@app.get("/basic/1")
+def basic1():
+    b = Basic(-12, +12)
+    method = np.random.choice(b.register())
     text, _ = method()
     problem = "{}".format(text)
     return {"problem": problem}
