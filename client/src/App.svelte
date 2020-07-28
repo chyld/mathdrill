@@ -1,10 +1,7 @@
 <script>
-	import Math from './Math.svelte';
+  import Math from "./Math.svelte";
 </script>
 
 <main>
-	<Math></Math>
+  <Math />
 </main>
-
-<style>
-</style>

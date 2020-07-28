@@ -20,12 +20,13 @@ app.add_middleware(
 db = Data()
 
 
-@app.get("/basic/1")
-def basic1():
-    b = Basic(-12, +12)
+@app.get("/basic/{basic_id}")
+def basic1(basic_id: int):
+    lookup = {1: (-12, +12), 2: (-20, +20), 3: (-100, +100)}
+    b = Basic(*lookup[basic_id])
     method = np.random.choice(b.register())
     question, answer = method()
-    drill_id = db.create("/basic/1", question, answer)
+    drill_id = db.create(f"/basic/{basic_id}", question, answer)
     return {"drill_id": drill_id, "question": question}
 
 

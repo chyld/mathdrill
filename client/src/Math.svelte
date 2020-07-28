@@ -1,72 +1,19 @@
 <script>
-	let promiseQuestion;
-	let promiseAnswer;
-	let answer;
-	let currentQuestion;
+  import Atom from "./Atom.svelte";
 
-	function displayMath(markup){
-		let html = MathJax.tex2svg(markup, {display: true});
-		let text = html.outerHTML;
-		return text;
-	}
+  let props;
 
-    async function getQuestion() {
-		const res = await fetch(`http://phi:3000/basic/1`, {mode: 'cors'});
-		const text = await res.text();
-		if (res.ok) {
-			currentQuestion = JSON.parse(text);
-			return currentQuestion;
-		} else {
-			throw new Error(text);
-		}
-	}
+  function clickButton(option) {
+    props = { questionUrl: `http://phi:3000/basic/${option}` };
+  }
 
-    function clickGetQuestion(){
-        promiseQuestion = getQuestion();
-	}
-
-    async function sendAnswer() {
-		let attemptResponse;
-		const res = await fetch(`http://phi:3000/attempt/${currentQuestion.drill_id}/${answer}`, {mode: 'cors', method: 'put'});
-		const text = await res.text();
-		if (res.ok) {
-			attemptResponse = JSON.parse(text);
-			if(attemptResponse.status){
-				console.log('good attempt');
-				clickGetQuestion()
-			}else{
-				console.log('bad attempt');
-			}
-		} else {
-			throw new Error(text);
-		}
-	}
-
-	function inputAnswer(){
-        promiseAnswer = sendAnswer();
-	}
+  clickButton(3);
 </script>
 
 <div>
-    <button on:click={clickGetQuestion}>Next Question</button>
-	<input bind:value={answer} on:input={inputAnswer}>
+  <button on:click={() => clickButton(1)}>Basic 1</button>
+  <button on:click={() => clickButton(2)}>Basic 2</button>
+  <button on:click={() => clickButton(3)}>Basic 3</button>
 
-    {#await promiseQuestion}
-	    <p>...waiting</p>
-	{:then question}
-		{#if question}
-			<div class='question'>
-				{@html displayMath(question.question)}
-			</div>
-		{/if}
-    {:catch error}
-	    <p>{error.message}</p>
-    {/await}
+  <svelte:component this={Atom} {...props} />
 </div>
-
-<style>
-	.question{
-		color: #ff33cc;
-		font-size: 55px;
-	}
-</style>
