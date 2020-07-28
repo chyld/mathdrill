@@ -1,5 +1,8 @@
 <script>
-    let promise;
+	let promiseQuestion;
+	let promiseAnswer;
+	let answer;
+	let currentQuestion;
 
 	function displayMath(markup){
 		let html = MathJax.tex2svg(markup, {display: true});
@@ -11,26 +14,49 @@
 		const res = await fetch(`http://phi:3000/basic/1`, {mode: 'cors'});
 		const text = await res.text();
 		if (res.ok) {
-			return JSON.parse(text);
+			currentQuestion = JSON.parse(text);
+			return currentQuestion;
 		} else {
 			throw new Error(text);
 		}
 	}
 
     function clickGetQuestion(){
-        promise = getQuestion();
-    }
+        promiseQuestion = getQuestion();
+	}
+
+    async function sendAnswer() {
+		let attemptResponse;
+		const res = await fetch(`http://phi:3000/attempt/${currentQuestion.drill_id}/${answer}`, {mode: 'cors', method: 'put'});
+		const text = await res.text();
+		if (res.ok) {
+			attemptResponse = JSON.parse(text);
+			if(attemptResponse.status){
+				console.log('good attempt');
+				clickGetQuestion()
+			}else{
+				console.log('bad attempt');
+			}
+		} else {
+			throw new Error(text);
+		}
+	}
+
+	function inputAnswer(){
+        promiseAnswer = sendAnswer();
+	}
 </script>
 
 <div>
     <button on:click={clickGetQuestion}>Next Question</button>
+	<input bind:value={answer} on:input={inputAnswer}>
 
-    {#await promise}
+    {#await promiseQuestion}
 	    <p>...waiting</p>
-	{:then response}
-		{#if response}
+	{:then question}
+		{#if question}
 			<div class='question'>
-				{@html displayMath(response.question)}
+				{@html displayMath(question.question)}
 			</div>
 		{/if}
     {:catch error}
