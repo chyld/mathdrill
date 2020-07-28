@@ -1,50 +1,46 @@
 <script>
-    let request;
-    let answer;
+    let promise;
 
-    async function getBasic() {
+	function displayMath(markup){
+		let html = MathJax.tex2svg(markup, {display: true});
+		let text = html.outerHTML;
+		return text;
+	}
+
+    async function getQuestion() {
 		const res = await fetch(`http://phi:3000/basic/1`, {mode: 'cors'});
 		const text = await res.text();
 		if (res.ok) {
-			return text;
+			return JSON.parse(text);
 		} else {
 			throw new Error(text);
 		}
 	}
 
-    async function sendAnswer() {
-		const res = await fetch(`http://phi:3000/answer/${answer}`, {mode: 'cors'});
-		const text = await res.text();
-		if (res.ok) {
-			return text;
-		} else {
-			throw new Error(text);
-		}
-	}
-
-    function handleClick(){
-        request = getBasic();
-    }
-
-    function handleAnswer(){
-        console.log('the answer is:', answer);
-        let x = sendAnswer();
+    function clickGetQuestion(){
+        promise = getQuestion();
     }
 </script>
 
 <div>
-    <p>this is math</p>
-    <button on:click={handleClick}>get question</button>
-    <input bind:value={answer} on:input={handleAnswer}>
+    <button on:click={clickGetQuestion}>Next Question</button>
 
-    {#await request}
+    {#await promise}
 	    <p>...waiting</p>
-    {:then number}
-	    <p>The number is {number}</p>
+	{:then response}
+		{#if response}
+			<div class='question'>
+				{@html displayMath(response.question)}
+			</div>
+		{/if}
     {:catch error}
-	    <p style="color: red">more {error.message}</p>
+	    <p>{error.message}</p>
     {/await}
 </div>
 
 <style>
+	.question{
+		color: #ff33cc;
+		font-size: 55px;
+	}
 </style>

@@ -1,3 +1,5 @@
+from greek import alphabet
+
 import numpy as np
 
 
@@ -12,14 +14,17 @@ class Basic:
     def get_values(self):
         return np.random.randint(self.lower, self.upper, 2)
 
+    def get_greek(self):
+        return np.random.choice(alphabet)
+
     def addition(self):
         a, b = self.get_values()
-        return "{} + {}".format(a, b), a + b
+        return "{} = ({}) + ({})".format(self.get_greek(), a, b), a + b
 
     def subtraction(self):
         a, b = self.get_values()
-        return "{} - {}".format(a, b), a - b
+        return "{} = ({}) - ({})".format(self.get_greek(), a, b), a - b
 
     def multiplication(self):
         a, b = self.get_values()
-        return "{} * {}".format(a, b), a * b
+        return "{} = ({}) ({})".format(self.get_greek(), a, b), a * b
