@@ -1,15 +1,15 @@
 <script>
-  import { beforeUpdate } from "svelte";
-
-  beforeUpdate(() => {
-    clickQuestion();
-  });
-
   export let questionUrl;
+  export let title;
   let promiseQuestion;
-  let promiseAnswer;
-  let answer;
-  let currentQuestion;
+  let guess;
+  let questionObject;
+  let inputRef;
+
+  $: {
+    console.log("Loading:", title);
+    clickQuestion();
+  }
 
   function displayMath(markup) {
     let html = MathJax.tex2svg(markup, { display: true });
@@ -18,39 +18,37 @@
   }
 
   async function getQuestion() {
-    console.log("getting a question");
     const res = await fetch(questionUrl, { mode: "cors" });
     const text = await res.text();
     if (res.ok) {
-      currentQuestion = JSON.parse(text);
-      return currentQuestion;
+      questionObject = JSON.parse(text);
+      guess = "";
+      inputRef.focus();
+      return questionObject;
     } else {
       throw new Error(text);
     }
   }
 
-  async function sendAnswer() {
-    let attemptResponse;
+  async function sendGuess() {
+    if (guess === " ") return clickQuestion();
+    if (isNaN(guess) || !guess.length) return;
+
     const res = await fetch(
-      `http://phi:3000/attempt/${currentQuestion.drill_id}/${answer}`,
+      `http://phi:3000/attempt/${questionObject.drill_id}/${guess}`,
       { mode: "cors", method: "put" }
     );
     const text = await res.text();
     if (res.ok) {
-      attemptResponse = JSON.parse(text);
-      if (attemptResponse.status) {
-        console.log("good attempt");
-        clickGetQuestion();
-      } else {
-        console.log("bad attempt");
-      }
+      let attemptResponse = JSON.parse(text);
+      if (attemptResponse.status) clickQuestion();
     } else {
       throw new Error(text);
     }
   }
 
-  function inputAnswer() {
-    promiseAnswer = sendAnswer();
+  function typingAnswer() {
+    sendGuess();
   }
 
   function clickQuestion() {
@@ -66,7 +64,8 @@
 </style>
 
 <div>
-  <input bind:value={answer} on:input={inputAnswer} />
+  <h1>{title}</h1>
+  <input bind:value={guess} on:input={typingAnswer} bind:this={inputRef} />
 
   {#await promiseQuestion}
     <p>...waiting</p>
