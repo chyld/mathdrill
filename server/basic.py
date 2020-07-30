@@ -36,7 +36,8 @@ class Basic:
 
     def modulus(self):
         a, b = self.get_values()
-        return "{} = {} \\ mod \\ {}".format(self.get_greek(), a, b), a % b
+        return "{} = mod \\ \\frac{{{}}}{{{}}}".format(
+            self.get_greek(), a, b), a % b
 
     def power(self):
         a, _ = self.get_values()
