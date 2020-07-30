@@ -6,7 +6,6 @@
 # docker logs -f <CONTAINER_ID>
 # docker kill <CONTAINER_ID>
 # http :3000/basic/1
-
 FROM python:3.8.5-buster
 
 EXPOSE 3000
