@@ -4,7 +4,7 @@
 
   let promiseQuestion;
   let guess;
-  let questionObject;
+  let answer;
   let inputRef;
 
   $: {
@@ -23,34 +23,18 @@
     const res = await fetch(questionUrl, { mode: "cors" });
     const text = await res.text();
     if (res.ok) {
-      questionObject = JSON.parse(text);
+      let response = JSON.parse(text);
+      answer = response.answer;
       guess = "";
       inputRef.focus();
-      return questionObject;
+      return response;
     } else {
       throw new Error(text);
     }
   }
 
-  async function sendGuess() {
-    if (guess === " ") return clickQuestion();
-    if (isNaN(guess) || !guess.length) return;
-
-    const res = await fetch(
-      `http://phi:3000/attempt/${questionObject.drill_id}/${guess}`,
-      { mode: "cors", method: "put" }
-    );
-    const text = await res.text();
-    if (res.ok) {
-      let attemptResponse = JSON.parse(text);
-      if (attemptResponse.status) clickQuestion();
-    } else {
-      throw new Error(text);
-    }
-  }
-
-  function typingAnswer() {
-    sendGuess();
+  function checkGuess() {
+    if (guess === " " || guess == answer) return clickQuestion();
   }
 
   function clickQuestion() {
@@ -81,14 +65,14 @@
     <input
       id="guessinput"
       bind:value={guess}
-      on:input={typingAnswer}
+      on:input={checkGuess}
       bind:this={inputRef} />
   </div>
 
-  {#await promiseQuestion then question}
-    {#if question}
+  {#await promiseQuestion then response}
+    {#if response}
       <div id="question">
-        {@html displayMath(question.question)}
+        {@html displayMath(response.question)}
       </div>
     {/if}
   {:catch error}
