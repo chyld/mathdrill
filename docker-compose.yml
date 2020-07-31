@@ -1,0 +1,21 @@
+# docker-compose build
+# docker-compose up -d
+# docker-compose logs -f
+# docker-compose down
+
+version: "3.8"
+services:
+    svelte:
+        container_name: svelte
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        ports:
+            - "5000:5000"
+    fastapi:
+        container_name: fastapi
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
