@@ -1,13 +1,22 @@
 # Math Drill
 
-## todo
+### Systemd Configuration
 
-- use MathJAX
-- change upper limit 1 to 100
-- change "n"
-- save to sql
-- multiplication
-- division
-- modularize
-- clear screen
-- add separate todo file
+Check services
+
+`systemctl --type=service --no-pager`
+
+Create service file
+
+`sudo vi /etc/systemd/system/mathdrill.service`
+
+Enable service start on reboot
+
+```
+sudo systemctl enable mathdrill
+sudo reboot
+```
+
+If you check status, it will say "exited". Check docker.
+
+`docker ps`
