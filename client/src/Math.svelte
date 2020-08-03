@@ -34,6 +34,9 @@
   <button class:active={selected == 3} on:click={() => clickButton(3)}>
     Basic 3
   </button>
+  <button class:active={selected == 4} on:click={() => clickButton(4)}>
+    Basic 4
+  </button>
 
   <svelte:component this={component} {...props} />
 </div>

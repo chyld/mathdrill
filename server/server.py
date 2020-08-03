@@ -17,7 +17,7 @@ app.add_middleware(
 
 @app.get("/basic/{basic_id}")
 def basic1(basic_id: int):
-    lookup = {1: (0, +12), 2: (0, +20), 3: (0, +100)}
+    lookup = {1: (0, +12), 2: (0, +20), 3: (0, +100), 4: (0, +1000)}
     b = Basic(*lookup[basic_id])
     method = np.random.choice(b.register())
     question, answer = method()
